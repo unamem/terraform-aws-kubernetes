@@ -85,6 +85,24 @@ apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 # Set new memory limit container with high memory requirements
 sysctl -w vm.max_map_count=262144
 
+## Configure docker deamon
+# From https://kubernetes.io/docs/setup/production-environment/container-runtimes/
+# Solves [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd".
+cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+systemctl daemon-reload
+systemctl restart docker
+# Avoids [WARNING Service-Docker]: docker service is not enabled, please run 'systemctl enable docker.service'
+systemctl enable docker.service
+
 echo 'KUBELET_EXTRA_ARGS=--cloud-provider=aws' > /etc/default/kubelet
 
 # Adding autocomplete for ubuntu

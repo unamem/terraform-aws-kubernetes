@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 3.0.0 (unreleased)
+
+Only supporting terraform 0.13 from now on.
+
+### Features & Changes
+
+- Tested with 1.19.0
+- Tested with terraform 0.13.2
+- Migrating cgroup driver to systemd
+
+### Bugfixes
+
+- Fixed a couple of warning during instantiation
+
+### Known bugs/issues
+
 ## 2.1.0
 
 New version tested with k8s from 1.15.x to 1.18.2
