@@ -9,6 +9,7 @@ Only supporting terraform 0.13 from now on.
 - Tested with 1.19.0
 - Tested with terraform 0.13.2
 - Migrating cgroup driver to systemd
+- Removed Travis in favour of GitHub actions
 
 ### Bugfixes
 

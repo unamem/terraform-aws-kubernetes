@@ -15,8 +15,6 @@ AWS_REGION=${region}
 K8S_DEB_PACKAGES_VERSION=${k8s_deb_package_version}
 # shellcheck disable=SC2154
 KUBEADM_VERSION_OF_K8S_TO_INSTALL=${kubeadm_install_version}
-# shellcheck disable=SC2154
-LOAD_BALANCER_DNS=${load_balancer_dns}
 
 ### Statics
 

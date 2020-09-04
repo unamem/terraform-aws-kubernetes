@@ -7,6 +7,10 @@ provider "template" {
   version = "~> 2.1.2"
 }
 
+resource "aws_vpc" "vpc" {
+  cidr_block = "10.0.0.0/16" # Fake to enable tf plan
+}
+
 module "k8s" {
 
   providers = {
@@ -14,10 +18,10 @@ module "k8s" {
     template = template
   }
 
-  source                            = "..\/..\/modules\/kubernetes"
+  source                            = "../../modules/kubernetes"
   network_region                    = "eu-west-1"
   region                            = "eu-west-1"
-  vpc_id                            = "vpc-xxx"
+  vpc_id                            = aws_vpc.vpc.id
   k8s_controllers_num_nodes         = "1" # Don't change this. This module does not support HA
   k8s_workers_num_nodes             = "1"
   k8s_deb_package_version           = "1.15.0"
@@ -43,13 +47,13 @@ module "k8s" {
 }
 
 resource "aws_route" "private_subnets_route_traffic_to_NAT" {
-  route_table_id         = "${module.k8s.private_route_table_id}"
+  route_table_id         = module.k8s.private_route_table_id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = "nat-xxx" # NAT Gateway
 }
 
 resource "aws_route" "private_subnets_route_traffic_to_IGW" {
-  route_table_id         = "${module.k8s.public_route_table_id}"
+  route_table_id         = module.k8s.public_route_table_id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = "igw-yyy" # Internet Gateway
 }

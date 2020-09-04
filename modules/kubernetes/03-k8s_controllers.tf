@@ -228,7 +228,7 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   metrics_granularity       = "1Minute"
   wait_for_capacity_timeout = "10m"
   vpc_zone_identifier       = aws_subnet.k8s_private.*.id
-  load_balancers            = [
+  load_balancers = [
     aws_elb.k8s_controllers_internal_elb.name,
     aws_elb.k8s_controllers_external_elb.name
   ]
