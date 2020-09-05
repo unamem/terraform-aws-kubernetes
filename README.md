@@ -1,6 +1,6 @@
 # Terraform module for kubernetes on AWS
 
-[![Actions Status](https://github.com/jecnua/terraform-aws-kubernetes/workflows/Tests/badge.svg)](https://github.com/jecnua/terraform-aws-kubernetes/)
+[![Actions Status](https://github.com/jecnua/terraform-aws-kubernetes/workflows/Tests/badge.svg)](https://github.com/jecnua/terraform-aws-kubernetes/actions)
 ![https://www.terraform.io/](https://img.shields.io/badge/terraform-v0.12.x-blue.svg?style=flat)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![](https://img.shields.io/maintenance/yes/2020.svg)
