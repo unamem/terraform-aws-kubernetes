@@ -18,7 +18,7 @@ resource "aws_launch_configuration" "k8s_workers_launch_configuration" {
   count                       = signum(var.k8s_workers_num_nodes)
   image_id                    = var.ami_id_worker != "" ? var.ami_id_worker : data.aws_ami.ami_dynamic.id
   instance_type               = var.ec2_k8s_workers_instance_type
-  key_name                    = var.ec2_key_name
+  key_name                    = var.enable_ssm_access_to_nodes ? null : var.ec2_key_name
   user_data                   = data.template_file.bootstrap_node_k8s_workers.rendered
   iam_instance_profile        = aws_iam_instance_profile.k8s_instance_profile.id
   associate_public_ip_address = false

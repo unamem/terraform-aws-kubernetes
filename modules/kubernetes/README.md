@@ -3,7 +3,9 @@
 ![](https://img.shields.io/badge/kubernetes-v1.19.3-green.svg)
 ![](https://img.shields.io/badge/ubuntu-20.04-blue.svg)
 
-This module will spin a up all you need in your infrastructure to run a kubernetes cluster.
+This module will create a new kubernetes cluster inside your VPC.
+
+You can find the parameters [here](params.md)
 
 Last tested with:
 
@@ -11,8 +13,6 @@ Last tested with:
         + provider registry.terraform.io/hashicorp/aws v3.11.0
         + provider registry.terraform.io/hashicorp/http v2.0.0
         + provider registry.terraform.io/hashicorp/template v2.2.0
-
-You can find the parameters [here](params.md)
 
 Support:
 
@@ -39,8 +39,8 @@ Be careful to pass the right subnets in availability_zone!
 
 You can choose what version of k8s to install passing this variables:
 
-    k8s_deb_package_version           = "1.15.0"
-    kubeadm_install_version           = "stable-1.15"
+    k8s_deb_package_version           = "1.19.3"
+    kubeadm_install_version           = "stable-1.19"
 
 ## Debug
 
@@ -113,6 +113,7 @@ More [here](result.txt)
 
 ## TODO
 
+- Add random provider to create unique names
 - Change ebs partition
 - Kill the node if the node cannot connect to the master ip
 - Fix CA verification

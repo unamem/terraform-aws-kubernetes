@@ -2,7 +2,7 @@
 
 ## 3.0.0 (unreleased)
 
-Only supporting terraform 0.13 from now on.
+Only supporting terraform 0.13 from now on. Major (and breaking) changes.
 
 ### Features & Changes
 
@@ -13,6 +13,7 @@ Only supporting terraform 0.13 from now on.
 - Updated min terraform version to 0.13
 - Removing weave and using calico as default CNI
 - Installed stern on all nodes
+- Added access to nodes via SSM and enable it by default (now ec2 key is optional)
 
 ### Bugfixes
 

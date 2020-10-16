@@ -108,3 +108,15 @@ variable "userdata_post_install" {
   type        = string
   default     = ""
 }
+
+variable "enable_ssm_access_to_nodes" {
+  description = "If set to true the nodes will register to AWS SSM"
+  type        = bool
+  default     = true
+}
+
+variable "ec2_key_name" {
+  type        = string
+  description = "The key name to associate to the new ec2 servers. Not needed if you use SSM or want no access"
+  default     = ""
+}
