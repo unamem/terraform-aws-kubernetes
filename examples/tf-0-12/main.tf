@@ -24,8 +24,8 @@ module "k8s" {
   vpc_id                            = aws_vpc.vpc.id
   k8s_controllers_num_nodes         = "1" # Don't change this. This module does not support HA
   k8s_workers_num_nodes             = "1"
-  k8s_deb_package_version           = "1.15.0"
-  kubeadm_install_version           = "stable-1.15"
+  k8s_deb_package_version           = "1.19.3"
+  kubeadm_install_version           = "stable-1.19"
   controller_join_token             = "xxx.yyy"
   environment                       = "dev"
   unique_identifier                 = "k8s"

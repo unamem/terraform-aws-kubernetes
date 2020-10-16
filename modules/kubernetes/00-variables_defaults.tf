@@ -79,11 +79,32 @@ variable "sns_topic_notifications" {
 variable "k8s_deb_package_version" {
   type        = string
   description = "The version of the deb package to install in ubuntu (i.e. 1.18.2)"
-  default     = "1.18.2"
+  default     = "1.19.3"
 }
 
 variable "kubeadm_install_version" {
   type        = string
   description = "The version to install in the syntax expected by kubeadm (i.e. stable-1.18)"
-  default     = "stable-1.18"
+  default     = "stable-1.19"
+}
+
+variable "userdata_pre_install" {
+  description = "User-data that will be applied before everything else is installed"
+  type        = string
+  default     = ""
+}
+
+# By default will install calico as CNI but you can override it to use what you want
+# Example of weave as alternative (remember to escape the "):
+# su "$KCTL_USER" -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+variable "userdata_cni_install" {
+  description = "User-data script that will be applied only in master"
+  type        = string
+  default     = "su \"$KCTL_USER\" -c \"kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml\""
+}
+
+variable "userdata_post_install" {
+  description = "User-data that will be applied on every node after everything else"
+  type        = string
+  default     = ""
 }

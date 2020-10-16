@@ -10,11 +10,11 @@ IS_WORKER=${is_worker}
 # shellcheck disable=SC2154
 CLUSTER_ID=${cluster_id}
 # shellcheck disable=SC2154
-AWS_REGION=${region}
-# shellcheck disable=SC2154
 K8S_DEB_PACKAGES_VERSION=${k8s_deb_package_version}
 # shellcheck disable=SC2154
 KUBEADM_VERSION_OF_K8S_TO_INSTALL=${kubeadm_install_version}
+
+STERN_VERSION='1.11.0'
 
 ### Statics
 
@@ -26,6 +26,8 @@ echo "$AWS_HOSTNAME" > /etc/hostname
 echo "127.0.0.1 $AWS_HOSTNAME" >> /etc/hosts
 
 export DEBIAN_FRONTEND="noninteractive"
+
+${pre_install}
 
 apt-get update
 apt-get upgrade --assume-yes
@@ -55,7 +57,7 @@ fi
 
 #################################################
 
-# Add repo
+# Add k8s repo
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat << EOF > /etc/apt/sources.list.d/kubernetes.list
 deb http://apt.kubernetes.io/ kubernetes-xenial main
@@ -70,11 +72,16 @@ apt install -y \
   jq \
   curl \
   nfs-common
-# This need to be synched
+# This need to be synchronized
 apt install -y \
   kubelet="$K8S_DEB_PACKAGES_VERSION-00" \
   kubeadm="$K8S_DEB_PACKAGES_VERSION-00" \
   kubectl="$K8S_DEB_PACKAGES_VERSION-00"
+
+# Install stern
+wget "https://github.com/wercker/stern/releases/download/$STERN_VERSION/stern_linux_amd64"
+chmod +x stern_linux_amd64
+mv stern_linux_amd64 /usr/local/bin/stern
 
 # Hold these packages back so that we don't accidentally upgrade them.
 # TODO: Remove version (locking to avoid bug in kubeadm)
@@ -122,10 +129,11 @@ then
   echo "export KUBECONFIG=/home/$KCTL_USER/.kube/config" | tee -a /home/$KCTL_USER/.bashrc
   su "$KCTL_USER" -c "kubectl label --overwrite no $AWS_HOSTNAME node-role.kubernetes.io/master=true"
   # Install CNI plugin
-  su "$KCTL_USER" -c "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  ${cni_install}
 else
   # You need to filter by tag Name to find the master to connect to. You don't
   # know at startup time the ip.
+  AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
   MASTER_IP=$(aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region="$AWS_REGION" | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq)
   # Read gotchas #1
   echo "Connecting to $MASTER_IP port 6443"
@@ -135,6 +143,8 @@ else
     --token "$CONTROLLER_JOIN_TOKEN" \
     "$MASTER_IP:6443"
 fi
+
+${post_install}
 
 touch /opt/bootstrap_completed
 echo "END: $(date)" >> /opt/bootstrap_times

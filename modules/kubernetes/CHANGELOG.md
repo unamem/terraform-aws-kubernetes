@@ -6,10 +6,13 @@ Only supporting terraform 0.13 from now on.
 
 ### Features & Changes
 
-- Tested with 1.19.0
-- Tested with terraform 0.13.2
+- Tested with 1.19.0 and update default version to 1.19.3
+- Tested with terraform 0.13.4
 - Migrating cgroup driver to systemd
 - Removed Travis in favour of GitHub actions
+- Updated min terraform version to 0.13
+- Removing weave and using calico as default CNI
+- Installed stern on all nodes
 
 ### Bugfixes
 

@@ -1,14 +1,16 @@
 data "template_file" "bootstrap_node_k8s_controllers" {
-  template = file("${path.module}/scripts/bootstrap.tpl")
+  template = file("${path.module}/scripts/bootstrap.sh")
 
   vars = {
     controller_join_token   = var.controller_join_token
     is_worker               = "" # Leave empty
     cluster_id              = var.kubernetes_cluster
-    region                  = var.region
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = var.kubeadm_install_version
     load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
+    pre_install             = var.userdata_pre_install
+    cni_install             = var.userdata_cni_install
+    post_install            = var.userdata_post_install
   }
 }
 

@@ -1,15 +1,16 @@
 # Kubernetes module
 
-![](https://img.shields.io/badge/kubernetes-v1.18.8-green.svg)
+![](https://img.shields.io/badge/kubernetes-v1.19.3-green.svg)
 ![](https://img.shields.io/badge/ubuntu-20.04-blue.svg)
 
 This module will spin a up all you need in your infrastructure to run a kubernetes cluster.
 
 Last tested with:
 
-    Terraform v0.12.24
-    + provider.aws v2.58.0
-    + provider.template v2.1.2
+        Terraform v0.13.4
+        + provider registry.terraform.io/hashicorp/aws v3.11.0
+        + provider registry.terraform.io/hashicorp/http v2.0.0
+        + provider registry.terraform.io/hashicorp/template v2.2.0
 
 You can find the parameters [here](params.md)
 
@@ -22,6 +23,7 @@ Support:
     k8s     1.16.x      YES
     k8s     1.17.x      YES
     k8s     1.18.8      YES
+    k8s     1.19.3      YES
 
 ## Usage
 
@@ -111,6 +113,7 @@ More [here](result.txt)
 
 ## TODO
 
+- Change ebs partition
 - Kill the node if the node cannot connect to the master ip
 - Fix CA verification
 - Make KCTL_USER parametric

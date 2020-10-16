@@ -1,14 +1,16 @@
 data "template_file" "bootstrap_node_k8s_workers" {
-  template = file("${path.module}/scripts/bootstrap.tpl")
+  template = file("${path.module}/scripts/bootstrap.sh")
 
   vars = {
     controller_join_token   = var.controller_join_token
     is_worker               = "true"
     cluster_id              = var.kubernetes_cluster
-    region                  = var.region
     k8s_deb_package_version = var.k8s_deb_package_version
-    kubeadm_install_version = ""
-    load_balancer_dns       = ""
+    kubeadm_install_version = "" # Ignored for nodes
+    load_balancer_dns       = "" # Ignored for nodes
+    pre_install             = var.userdata_pre_install
+    cni_install             = "" # Ignored for nodes
+    post_install            = var.userdata_post_install
   }
 }
 
