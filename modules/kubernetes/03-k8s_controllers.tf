@@ -209,7 +209,7 @@ resource "aws_security_group_rule" "allow_all_from_k8s_controller_internal_elb" 
 }
 
 # Allow everything from the cluster: TCP and UDP
-# Needed by some CNI network plugins like Weave
+# Needed by some CNI network plugins
 resource "aws_security_group_rule" "allow_all_from_k8s_worker_nodes" {
   type                     = "ingress"
   from_port                = 0

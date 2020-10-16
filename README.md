@@ -50,7 +50,8 @@ As it is now there is no path to upgrade aside moving the workload to another cl
 
 ### Implementation choices
 
-At the moment I wanted to avid dependencies to external tools like ansible, so the installation happens in bash with cloud-init. This means some architectural choices are defined in there and they can't be modified. One example is I am using weave as overlay network implementation and swapping it with flannel is not possible.
+At the moment I wanted to avid dependencies to external tools like ansible, so the installation happens in bash with 
+cloud-init. This means some architectural choices are defined in there and they can't be modified.
 
 Obviously this can be fixed, just fork and PR into this :)
 
