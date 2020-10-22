@@ -57,6 +57,11 @@ fi
 
 #################################################
 
+#apt update
+#apt install gnupg2 ca-certificates
+#apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6A030B21BA07F4FB
+#kubeadm config print init-defaults
+
 # Add k8s repo
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat << EOF > /etc/apt/sources.list.d/kubernetes.list
@@ -118,9 +123,10 @@ then
   # Start as master (no HA)
   # Forcing version
   VERSION=$KUBEADM_VERSION_OF_K8S_TO_INSTALL
-  kubeadm init \
-    --kubernetes-version "$VERSION" \
-    --token "$CONTROLLER_JOIN_TOKEN"
+  cat <<EOF > /home/ubuntu/kubeadm-config.yaml
+${kubeadm_config}
+EOF
+  kubeadm init --config /home/ubuntu/kubeadm-config.yaml --v=5
   KCTL_USER='ubuntu'
   cd /home/$KCTL_USER || exit
   mkdir -p /home/$KCTL_USER/.kube

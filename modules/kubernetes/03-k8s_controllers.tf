@@ -7,10 +7,20 @@ data "template_file" "bootstrap_node_k8s_controllers" {
     cluster_id              = var.kubernetes_cluster
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = var.kubeadm_install_version
-    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
-    pre_install             = var.userdata_pre_install
-    cni_install             = var.userdata_cni_install
-    post_install            = var.userdata_post_install
+    //    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
+    pre_install    = var.userdata_pre_install
+    cni_install    = var.userdata_cni_install
+    post_install   = var.userdata_post_install
+    kubeadm_config = data.template_file.bootstrap_k8s_controllers_kubeadm_config.rendered
+  }
+}
+
+data "template_file" "bootstrap_k8s_controllers_kubeadm_config" {
+  template = file("${path.module}/scripts/kubeadm_configs.yaml")
+  vars = {
+    k8s_deb_package_version  = var.k8s_deb_package_version
+    controller_join_token    = var.controller_join_token
+    enable_admission_plugins = var.enable_admission_plugins
   }
 }
 
@@ -77,41 +87,41 @@ resource "aws_elb" "k8s_controllers_internal_elb" {
 }
 
 # External ELB to connect to the api
-resource "aws_elb" "k8s_controllers_external_elb" {
-  name                      = "${var.unique_identifier}-${var.environment}-ctrl-ext-elb"
-  subnets                   = aws_subnet.k8s_public.*.id
-  idle_timeout              = var.k8s_controllers_lb_timeout_seconds
-  internal                  = false
-  cross_zone_load_balancing = true
-  connection_draining       = true
-
-  listener {
-    instance_port     = 6443
-    instance_protocol = "http"
-    lb_port           = 6443
-    lb_protocol       = "http"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 3 #90 seconds
-    timeout             = 10
-    target              = "TCP:22" # TODO
-    interval            = 15
-  }
-
-  security_groups = [
-    aws_security_group.k8s_controllers_internal_elb_ag_sg.id,
-  ]
-
-  tags = {
-    Environment       = var.environment
-    ManagedBy         = "terraform k8s module"
-    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
-    Name              = "${var.unique_identifier} ${var.environment} controllers external elb"
-    KubernetesCluster = var.kubernetes_cluster
-  }
-}
+//resource "aws_elb" "k8s_controllers_external_elb" {
+//  name                      = "${var.unique_identifier}-${var.environment}-ctrl-ext-elb"
+//  subnets                   = aws_subnet.k8s_public.*.id
+//  idle_timeout              = var.k8s_controllers_lb_timeout_seconds
+//  internal                  = false
+//  cross_zone_load_balancing = true
+//  connection_draining       = true
+//
+//  listener {
+//    instance_port     = 6443
+//    instance_protocol = "http"
+//    lb_port           = 6443
+//    lb_protocol       = "http"
+//  }
+//
+//  health_check {
+//    healthy_threshold   = 2
+//    unhealthy_threshold = 3 #90 seconds
+//    timeout             = 10
+//    target              = "TCP:22" # TODO
+//    interval            = 15
+//  }
+//
+//  security_groups = [
+//    aws_security_group.k8s_controllers_internal_elb_ag_sg.id,
+//  ]
+//
+//  tags = {
+//    Environment       = var.environment
+//    ManagedBy         = "terraform k8s module"
+//    ModuleRepository  = "https://github.com/jecnua/terraform-aws-kubernetes"
+//    Name              = "${var.unique_identifier} ${var.environment} controllers external elb"
+//    KubernetesCluster = var.kubernetes_cluster
+//  }
+//}
 
 # TODO: Close this to outside and make it injectable
 resource "aws_security_group" "k8s_controllers_internal_elb_ag_sg" {
@@ -232,7 +242,7 @@ resource "aws_autoscaling_group" "k8s_controllers_ag" {
   vpc_zone_identifier       = aws_subnet.k8s_private.*.id
   load_balancers = [
     aws_elb.k8s_controllers_internal_elb.name,
-    aws_elb.k8s_controllers_external_elb.name
+    //    aws_elb.k8s_controllers_external_elb.name
   ]
 
   termination_policies = [

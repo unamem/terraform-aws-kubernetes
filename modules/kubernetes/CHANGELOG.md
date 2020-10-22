@@ -14,6 +14,10 @@ Only supporting terraform 0.13 from now on. Major (and breaking) changes.
 - Removing weave and using calico as default CNI
 - Installed stern on all nodes
 - Added access to nodes via SSM and enable it by default (now ec2 key is optional)
+- CIS compliance: Enabled audit logs
+- CIS compliance: Disable profiling via web
+- CIS compliance: Setting kubelet-certificate-authority in api server
+- Made the enabled admission controller parametric so you can add more as needed
 
 ### Bugfixes
 

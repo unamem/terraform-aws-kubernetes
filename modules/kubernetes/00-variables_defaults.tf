@@ -120,3 +120,9 @@ variable "ec2_key_name" {
   description = "The key name to associate to the new ec2 servers. Not needed if you use SSM or want no access"
   default     = ""
 }
+
+variable "enable_admission_plugins" {
+  type        = string
+  description = "The comma separated list of admission plugin to enable"
+  default     = "NodeRestriction" # Def for 1.19
+}
