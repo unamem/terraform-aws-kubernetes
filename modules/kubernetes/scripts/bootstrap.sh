@@ -139,15 +139,17 @@ EOF
 else
   # You need to filter by tag Name to find the master to connect to. You don't
   # know at startup time the ip.
+  # Read gotchas #1
   AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
   MASTER_IP=$(aws ec2 describe-instances --filters "Name=tag:k8s.io/role/master,Values=1" "Name=tag:KubernetesCluster,Values=$CLUSTER_ID" --region="$AWS_REGION" | grep '\"PrivateIpAddress\"' | cut -d ':' -f2 | cut -d'"' -f 2 | uniq)
-  # Read gotchas #1
-  echo "Connecting to $MASTER_IP port 6443"
-  echo "Connecting with token $CONTROLLER_JOIN_TOKEN"
-  kubeadm join \
-    --discovery-token-unsafe-skip-ca-verification \
-    --token "$CONTROLLER_JOIN_TOKEN" \
-    "$MASTER_IP:6443"
+  cat <<EOF > /home/ubuntu/kubeadm-join-config.yaml
+${kubeadm_join_config}
+EOF
+  # Replacing with the master ip
+  sed -i "s/MASTERIP/$MASTER_IP/g" /home/ubuntu/kubeadm-join-config.yaml
+  kubeadm join --config /home/ubuntu/kubeadm-join-config.yaml --v=5
+  # FIX CIS: [FAIL] 4.2.6 Ensure that the --protect-kernel-defaults argument is set to true (Automated)
+  echo 'protectKernelDefaults: true' >> /var/lib/kubelet/config.yaml
 fi
 
 ${post_install}

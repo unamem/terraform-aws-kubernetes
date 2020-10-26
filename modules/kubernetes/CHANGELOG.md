@@ -7,16 +7,17 @@ Only supporting terraform 0.13 from now on. Major (and breaking) changes.
 ### Features & Changes
 
 - Tested with 1.19.0 and update default version to 1.19.3
-- Tested with terraform 0.13.4
+- Tested with terraform 0.13.4. Updated min terraform version to 0.13
+- Both master and node setup use kubeadm configs instead of flags
 - Migrating cgroup driver to systemd
 - Removed Travis in favour of GitHub actions
-- Updated min terraform version to 0.13
-- Removing weave and using calico as default CNI
+- Removing weave in favour of Calico as default CNI
 - Installed stern on all nodes
 - Added access to nodes via SSM and enable it by default (now ec2 key is optional)
-- CIS compliance: Enabled audit logs
-- CIS compliance: Disable profiling via web
-- CIS compliance: Setting kubelet-certificate-authority in api server
+- CIS compliance Master: Enabled audit logs
+- CIS compliance Master: Disable profiling via web
+- CIS compliance Master: Setting kubelet-certificate-authority in api server
+- CIS compliance Node: Protecting kernel settings
 - Made the enabled admission controller parametric so you can add more as needed
 
 ### Bugfixes

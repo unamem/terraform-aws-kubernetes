@@ -8,19 +8,27 @@ data "template_file" "bootstrap_node_k8s_controllers" {
     k8s_deb_package_version = var.k8s_deb_package_version
     kubeadm_install_version = var.kubeadm_install_version
     //    load_balancer_dns       = aws_elb.k8s_controllers_external_elb.dns_name
-    pre_install    = var.userdata_pre_install
-    cni_install    = var.userdata_cni_install
-    post_install   = var.userdata_post_install
-    kubeadm_config = data.template_file.bootstrap_k8s_controllers_kubeadm_config.rendered
+    pre_install         = var.userdata_pre_install
+    cni_install         = var.userdata_cni_install
+    post_install        = var.userdata_post_install
+    kubeadm_config      = data.template_file.bootstrap_k8s_controllers_kubeadm_config.rendered
+    kubeadm_join_config = ""
   }
 }
 
 data "template_file" "bootstrap_k8s_controllers_kubeadm_config" {
-  template = file("${path.module}/scripts/kubeadm_configs.yaml")
+  template = file("${path.module}/scripts/kubeadm_config.yaml")
   vars = {
     k8s_deb_package_version  = var.k8s_deb_package_version
     controller_join_token    = var.controller_join_token
     enable_admission_plugins = var.enable_admission_plugins
+  }
+}
+
+data "template_file" "bootstrap_k8s_controllers_kubeadm_join_config" {
+  template = file("${path.module}/scripts/kubeadm_join_config.yaml")
+  vars = {
+    controller_join_token = var.controller_join_token
   }
 }
 
